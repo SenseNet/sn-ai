@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SenseNet.AI.CLI": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
