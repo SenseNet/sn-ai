@@ -3,19 +3,37 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
 using SenseNet.AI.Abstractions;
+using SenseNet.Tools.Features;
 
 namespace SenseNet.AI.SemanticKernel;
 
-public class TextService : ITextService
+public class SummaryProvider : ISummaryProvider, ISnFeature
 {
     private readonly SemanticKernelOptions _options;
-    private readonly ILogger<TextService> _logger;
+    private readonly ILogger<SummaryProvider> _logger;
 
-    public TextService(IOptions<SemanticKernelOptions> options, ILogger<TextService> logger)
+    public SummaryProvider(IOptions<SemanticKernelOptions> options, ILogger<SummaryProvider> logger)
     {
         _options = options.Value;
         _logger = logger;
     }
+
+    #region ISnFeature implementation
+
+    public string Name => "AISummary";
+    public string DisplayName => "AI Summary";
+
+    public Task<FeatureAvailability> GetStateAsync()
+    {
+        if (string.IsNullOrEmpty(_options.OpenAiApiKey))
+            return Task.FromResult(new FeatureAvailability(FeatureState.NotConfigured, "OpenAI API key is not set."));
+        
+        //TODO: periodically check if the api key is valid and the service is available
+
+        return Task.FromResult(new FeatureAvailability(FeatureState.Active));
+    }
+
+    #endregion
 
     public async Task<string> GetSummary(string text, CancellationToken cancel)
     {

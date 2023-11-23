@@ -20,9 +20,9 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 
 var host = hostBuilder.Build();
 
-var aiTextService = host.Services.GetRequiredService<ITextService>();
+var summaryProvider = host.Services.GetRequiredService<ISummaryProvider>();
 var text = @"";
 
-var result = await aiTextService.GetSummary(text, CancellationToken.None);
+var result = await summaryProvider.GetSummary(text, CancellationToken.None);
 
 Console.WriteLine(result);
