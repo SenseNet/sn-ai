@@ -23,7 +23,7 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
     public string Name => "AISummary";
     public string DisplayName => "AI Summary";
 
-    public Task<FeatureAvailability> GetStateAsync()
+    public Task<FeatureAvailability> GetStateAsync(CancellationToken _)
     {
         if (string.IsNullOrEmpty(_options.OpenAiApiKey))
             return Task.FromResult(new FeatureAvailability(FeatureState.NotConfigured, "OpenAI API key is not set."));
