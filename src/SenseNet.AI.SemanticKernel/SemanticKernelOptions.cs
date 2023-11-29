@@ -1,5 +1,11 @@
-﻿namespace SenseNet.AI.SemanticKernel;
+﻿using SenseNet.Tools.Configuration;
 
+namespace SenseNet.AI.SemanticKernel;
+
+/// <summary>
+/// Options for the Semantic Kernel feature.
+/// </summary>
+[OptionsClass(sectionName: "sensenet:SemanticKernel")]
 public class SemanticKernelOptions
 {
     //public string Model { get; set; }

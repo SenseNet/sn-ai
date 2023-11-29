@@ -7,15 +7,16 @@ namespace SenseNet.Extensions.DependencyInjection;
 public static class SemanticKernelExtensions
 {
     /// <summary>
-    /// Adds the Semantic Kernel service to the service collection.
+    /// Adds the Semantic Kernel service to the service collection and the Summary provider feature to sensenet.
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="configureOptions"></param>
+    /// <param name="configureOptions">Configures AI values.</param>
     /// <returns></returns>
-    public static IServiceCollection AddSemanticKernel(this IServiceCollection services, 
+    public static IServiceCollection AddSenseNetSemanticKernel(this IServiceCollection services, 
         Action<SemanticKernelOptions>? configureOptions = null)
     {
-        services.AddSingleton<ITextService, TextService>();
+        services.AddSingleton<ISummaryProvider, SummaryProvider>();
+        services.AddSenseNetFeature<SummaryProvider>();
         services.Configure(configureOptions ?? (options => { }));
         services.AddLogging();
 

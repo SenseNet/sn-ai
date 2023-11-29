@@ -1,9 +1,9 @@
 ﻿namespace SenseNet.AI.Abstractions;
 
 /// <summary>
-/// Defines methods for simple text processing.
+/// Defines methods for summarizing text.
 /// </summary>
-public interface ITextService
+public interface ISummaryProvider
 {
     Task<string> GetSummary(string text, CancellationToken cancel);
 }
