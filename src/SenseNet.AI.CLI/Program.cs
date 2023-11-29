@@ -8,7 +8,7 @@ using SenseNet.Extensions.DependencyInjection;
 var hostBuilder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddSemanticKernel(options => 
+        services.AddSenseNetSemanticKernel(options => 
                 hostContext.Configuration.GetSection("SemanticKernel").Bind(options));
 
         services.AddLogging((loggingBuilder) =>
