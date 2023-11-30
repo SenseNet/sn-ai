@@ -5,7 +5,7 @@ namespace SenseNet.AI.SemanticKernel;
 /// <summary>
 /// Options for the Semantic Kernel feature.
 /// </summary>
-[OptionsClass(sectionName: "sensenet:SemanticKernel")]
+[OptionsClass(sectionName: "sensenet:ai:SemanticKernel")]
 public class SemanticKernelOptions
 {
     //public string Model { get; set; }

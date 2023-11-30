@@ -23,6 +23,6 @@ var host = hostBuilder.Build();
 var summaryProvider = host.Services.GetRequiredService<ISummaryProvider>();
 var text = @"";
 
-var result = await summaryProvider.GetSummary(text, CancellationToken.None);
+var result = await summaryProvider.GetSummary(text, 50, 2, CancellationToken.None);
 
 Console.WriteLine(result);
