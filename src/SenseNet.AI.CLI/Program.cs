@@ -21,7 +21,7 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 var host = hostBuilder.Build();
 
 var summaryProvider = host.Services.GetRequiredService<ISummaryProvider>();
-var text = @"";
+var text = @"A very short text, but long enough to test the summary feature.";
 
 var result = await summaryProvider.GetSummary(text, 50, 2, CancellationToken.None);
 
