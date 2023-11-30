@@ -35,7 +35,7 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
 
     #endregion
 
-    public async Task<string> GetSummary(string text, CancellationToken cancel)
+    public async Task<string> GetSummary(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel)
     {
         var builder = new KernelBuilder();
 
@@ -61,8 +61,12 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
 
         IKernel kernel = builder.Build();
 
+        // make sure that max word and sentence counts are reasonable (1-10000, 1-500)
+        maxWordCount = Math.Max(1, Math.Min(maxWordCount, 10000));
+        maxSentenceCount = Math.Max(1, Math.Min(maxSentenceCount, 500));
+
         var prompt = @"{{$input}}
-Maximum three lines TLDR, maximum three sentences.";
+" + $"TLDR in maximum {maxWordCount} words, maximum {maxSentenceCount} sentences.";
 
         var summarize = kernel.CreateSemanticFunction(prompt,
             requestSettings: new OpenAIRequestSettings { MaxTokens = 100 });
