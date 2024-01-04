@@ -4,8 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.0.1.1-beta4</Version>
-		<Authors>tusmester</Authors>
+		<Version>0.0.1.2</Version>
+		<Authors>tusmester,kavics</Authors>
 		<Company>Sense/Net Inc.</Company>
 		<Copyright>Copyright © Sense/Net Inc.</Copyright>
 		<PackageLicenseUrl>https://github.com/SenseNet/sensenet/blob/master/LICENSE</PackageLicenseUrl>
@@ -13,11 +13,11 @@
 		<PackageIconUrl>https://raw.githubusercontent.com/SenseNet/sn-resources/master/images/sn-icon/sensenet-icon-64.png</PackageIconUrl>
 		<RepositoryUrl>https://github.com/SenseNet/sensenet.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>sensenet csp content repository ai openai semantickernel</PackageTags>
+		<PackageTags>sensenet csp content repository ai openai text semantickernel</PackageTags>
 		<PackageReleaseNotes>See release notes on GitHub.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Product>sensenet AI SemanticKernel</Product>
-		<Description>AI SemanticKernel package for the sensenet platform.</Description>
+		<Product>sensenet AI Text SemanticKernel</Product>
+		<Description>AI Text SemanticKernel package for the sensenet platform.</Description>
 		<LangVersion>latest</LangVersion>
 		<DebugType>portable</DebugType>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -33,7 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SenseNet.AI.Abstractions\SenseNet.AI.Abstractions.csproj" />
+		<ProjectReference Include="..\SenseNet.AI.Text\SenseNet.AI.Text.csproj" />
 	</ItemGroup>
 
 </Project>

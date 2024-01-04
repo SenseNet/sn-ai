@@ -1,6 +1,6 @@
 ﻿using SenseNet.Tools.Configuration;
 
-namespace SenseNet.AI.SemanticKernel;
+namespace SenseNet.AI.Text.SemanticKernel;
 
 /// <summary>
 /// Options for the Semantic Kernel feature.
