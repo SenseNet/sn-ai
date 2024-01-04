@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SenseNet.AI.Abstractions;
-using SenseNet.AI.SemanticKernel;
+using SenseNet.AI.Text;
+using SenseNet.AI.Text.SemanticKernel;
 
 namespace SenseNet.Extensions.DependencyInjection;
 

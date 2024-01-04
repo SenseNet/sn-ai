@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SenseNet.AI.Abstractions;
+using SenseNet.AI.Text;
 using SenseNet.Extensions.DependencyInjection;
 
 var hostBuilder = Host.CreateDefaultBuilder(args)

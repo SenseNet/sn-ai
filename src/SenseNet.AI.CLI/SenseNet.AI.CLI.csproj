@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SenseNet.AI.SemanticKernel\SenseNet.AI.SemanticKernel.csproj" />
+    <ProjectReference Include="..\SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

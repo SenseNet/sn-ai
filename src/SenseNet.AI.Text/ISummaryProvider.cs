@@ -1,4 +1,4 @@
-﻿namespace SenseNet.AI.Abstractions;
+﻿namespace SenseNet.AI.Text;
 
 /// <summary>
 /// Defines methods for summarizing text.

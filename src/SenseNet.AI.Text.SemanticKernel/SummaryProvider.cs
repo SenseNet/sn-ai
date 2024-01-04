@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
-using SenseNet.AI.Abstractions;
 using SenseNet.Tools.Features;
 
-namespace SenseNet.AI.SemanticKernel;
+namespace SenseNet.AI.Text.SemanticKernel;
 
 public class SummaryProvider : ISummaryProvider, ISnFeature
 {
