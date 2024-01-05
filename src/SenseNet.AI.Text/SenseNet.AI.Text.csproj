@@ -8,10 +8,10 @@
 		<Authors>tusmester,kavics</Authors>
 		<Company>Sense/Net Inc.</Company>
 		<Copyright>Copyright © Sense/Net Inc.</Copyright>
-		<PackageLicenseUrl>https://github.com/SenseNet/sensenet/blob/master/LICENSE</PackageLicenseUrl>
-		<PackageProjectUrl>https://github.com/SenseNet/sensenet</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/SenseNet/sn-ai/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/SenseNet/sn-ai</PackageProjectUrl>
 		<PackageIconUrl>https://raw.githubusercontent.com/SenseNet/sn-resources/master/images/sn-icon/sensenet-icon-64.png</PackageIconUrl>
-		<RepositoryUrl>https://github.com/SenseNet/sensenet.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/SenseNet/sn-ai.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>sensenet csp content repository ai openai text</PackageTags>
 		<PackageReleaseNotes>See release notes on GitHub.</PackageReleaseNotes>
