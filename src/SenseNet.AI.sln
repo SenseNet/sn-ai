@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.CLI", "SenseNet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Text", "SenseNet.AI.Text\SenseNet.AI.Text.csproj", "{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Vision", "SenseNet.AI.Vision\SenseNet.AI.Vision.csproj", "{F3BAA456-281B-4264-9084-D4D53A4B8382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Vision.Azure", "SenseNet.AI.Vision.Azure\SenseNet.AI.Vision.Azure.csproj", "{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3BAA456-281B-4264-9084-D4D53A4B8382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3BAA456-281B-4264-9084-D4D53A4B8382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3BAA456-281B-4264-9084-D4D53A4B8382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3BAA456-281B-4264-9084-D4D53A4B8382}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
