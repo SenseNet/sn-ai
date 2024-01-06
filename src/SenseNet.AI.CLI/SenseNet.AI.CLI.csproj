@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj" />
+    <ProjectReference Include="..\SenseNet.AI.Vision.Azure\SenseNet.AI.Vision.Azure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

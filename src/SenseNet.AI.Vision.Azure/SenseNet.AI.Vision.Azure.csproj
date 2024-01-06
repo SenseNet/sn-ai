@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.0.1.2</Version>
+		<Version>0.0.0.1</Version>
 		<Authors>tusmester,kavics</Authors>
 		<Company>Sense/Net Inc.</Company>
 		<Copyright>Copyright © Sense/Net Inc.</Copyright>
@@ -13,16 +13,27 @@
 		<PackageIconUrl>https://raw.githubusercontent.com/SenseNet/sn-resources/master/images/sn-icon/sensenet-icon-64.png</PackageIconUrl>
 		<RepositoryUrl>https://github.com/SenseNet/sn-ai.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>sensenet csp content repository ai openai text</PackageTags>
+		<PackageTags>sensenet csp content repository ai openai vision azure</PackageTags>
 		<PackageReleaseNotes>See release notes on GitHub.</PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Product>sensenet AI Text abstractions</Product>
-		<Description>AI Text abstractions for the sensenet platform.</Description>
+		<Product>sensenet Azure AI Vision</Product>
+		<Description>Azure AI Vision package for the sensenet platform.</Description>
 		<LangVersion>latest</LangVersion>
 		<DebugType>portable</DebugType>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="SenseNet.Tools" Version="3.2.12.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SenseNet.AI.Vision\SenseNet.AI.Vision.csproj" />
+  </ItemGroup>
 
 </Project>
