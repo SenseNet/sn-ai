@@ -9,7 +9,11 @@ namespace SenseNet.AI.Text.SemanticKernel;
 public class SemanticKernelOptions
 {
     //public string Model { get; set; }
-    //public string AzureEndpoint { get; set; }
+
+    /// <summary>
+    /// Azure service endpoint
+    /// </summary>
+    public string? AzureEndpoint { get; set; }
     
     /// <summary>
     /// OpenAI API key

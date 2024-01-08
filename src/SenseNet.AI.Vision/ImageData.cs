@@ -13,4 +13,9 @@ public struct ImageData
     public string Url { get; set; }
     // public string Base64Data { get; set; }
     // public string RevisedPrompt { get; set; }
+
+    public override string ToString()
+    {
+        return Url;
+    }
 }
