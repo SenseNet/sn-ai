@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure.AI.OpenAI;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.AI.OpenAI;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SenseNet.Tools.Features;
 
 namespace SenseNet.AI.Text.SemanticKernel;
@@ -36,15 +37,9 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
 
     public async Task<string> GetSummary(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel)
     {
-        var builder = new KernelBuilder();
-
-        // Configure AI backend used by the kernel
-        // var (useAzureOpenAI, model, azureEndpoint, apiKey, orgId) = Settings.LoadFromFile();
-        // if (useAzureOpenAI)
-        //     builder.WithAzureOpenAIChatCompletionService(model, azureEndpoint, apiKey);
-        // else
-        //     builder.WithOpenAIChatCompletionService(model, apiKey, orgId);
-
+        //TODO: can we use a singleton kernel builder, defined during startup in DI?
+        var builder = Kernel.CreateBuilder();
+        
         if (string.IsNullOrEmpty(_options.OpenAiApiKey))
             throw new InvalidOperationException("OpenAI API key is not set.");
 
@@ -53,12 +48,25 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
             _logger.LogTrace("Text is empty, OpenAI call skipped, returning empty string");
             return string.Empty;
         }
+        
+        if (string.IsNullOrEmpty(_options.AzureEndpoint))
+        {
+            _logger.LogTrace("Initializing OpenAI kernel with the default endpoint.");
 
-        _logger.LogTrace("Initializing OpenAI kernel");
+            // use the default OpenAI endpoint
+            builder.AddOpenAIChatCompletion("gpt-3.5-turbo", new OpenAIClient(_options.OpenAiApiKey));
+        }
+        else
+        {
+            _logger.LogTrace("Initializing OpenAI kernel with the endpoint {endpoint}", _options.AzureEndpoint);
 
-        builder.WithOpenAIChatCompletionService("gpt-3.5-turbo", _options.OpenAiApiKey);
+            // Azure mode
+            builder.AddAzureOpenAIChatCompletion("gpt-3.5-turbo", 
+                _options.AzureEndpoint,
+                _options.OpenAiApiKey);
+        }
 
-        IKernel kernel = builder.Build();
+        var kernel = builder.Build();
 
         // make sure that max word and sentence counts are reasonable (1-10000, 1-500)
         maxWordCount = Math.Max(1, Math.Min(maxWordCount, 10000));
@@ -67,12 +75,18 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
         var prompt = @"{{$input}}
 " + $"TLDR in maximum {maxWordCount} words, maximum {maxSentenceCount} sentences.";
 
-        var summarize = kernel.CreateSemanticFunction(prompt,
-            requestSettings: new OpenAIRequestSettings { MaxTokens = 100 });
+        var summarize = kernel.CreateFunctionFromPrompt(prompt, 
+            new OpenAIPromptExecutionSettings
+            {
+                MaxTokens = 500
+            });
 
         _logger.LogTrace("Running OpenAI operation");
 
-        var result = await kernel.RunAsync(text, summarize);
+        var result = await kernel.InvokeAsync(summarize, new KernelArguments
+        {
+            ["input"] = text
+        }, cancellationToken: cancel);
 
         return result.ToString();
     }
