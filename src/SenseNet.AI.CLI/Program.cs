@@ -80,8 +80,8 @@ while(true)
         {
             foreach (var item in results)
             {
-                var contentType = (string)item["Type"];
-                ConsoleWriteLine(ConsoleColor.White, $"{contentType}\t{item.Name}\t{item.Path}");
+                var contentType = item["Type"].ToString();
+                ConsoleWriteLine(ConsoleColor.White, $"{contentType,-16}\t{item.Name}\t{item.Path}");
             }
             
             Console.WriteLine();
