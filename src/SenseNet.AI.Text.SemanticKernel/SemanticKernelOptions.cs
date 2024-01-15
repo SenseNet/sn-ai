@@ -23,4 +23,9 @@ public class SemanticKernelOptions
     /// OpenAI organization ID
     /// </summary>
     public string? OrgId { get; set; }
+
+    /// <summary>
+    /// OpenAI assistant ID
+    /// </summary>
+    public string? AssistantId { get; set; }
 }
