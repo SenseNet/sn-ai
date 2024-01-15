@@ -81,7 +81,7 @@ while(true)
             foreach (var item in results)
             {
                 var contentType = item["Type"].ToString();
-                ConsoleWriteLine(ConsoleColor.White, $"{contentType,-16}\t{item.Name}\t{item.Path}");
+                ConsoleWriteLine(ConsoleColor.White, $"{contentType,-16}\t{item.Name,-25}\t{item.Path}");
             }
             
             Console.WriteLine();
