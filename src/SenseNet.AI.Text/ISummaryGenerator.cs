@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines methods for summarizing text.
 /// </summary>
-public interface ISummaryProvider
+public interface ISummaryGenerator
 {
     /// <summary>
     /// Summarizes the given text.
@@ -13,5 +13,5 @@ public interface ISummaryProvider
     /// <param name="maxSentenceCount">Maximum sentence count.</param>
     /// <param name="cancel"></param>
     /// <returns>Summary text, maximized by the provided values.</returns>
-    Task<string> GetSummary(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel);
+    Task<string> GenerateSummaryAsync(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel);
 }

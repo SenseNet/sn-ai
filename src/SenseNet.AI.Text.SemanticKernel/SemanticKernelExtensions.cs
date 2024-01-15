@@ -16,9 +16,9 @@ public static class SemanticKernelExtensions
     public static IServiceCollection AddSenseNetSemanticKernel(this IServiceCollection services, 
         Action<SemanticKernelOptions>? configureOptions = null)
     {
-        services.AddSingleton<ISummaryProvider, SummaryProvider>();
+        services.AddSingleton<ISummaryGenerator, SummaryGenerator>();
         services.AddSingleton<IContentQueryGenerator, ContentQueryGenerator>();
-        services.AddSenseNetFeature<SummaryProvider>();
+        services.AddSenseNetFeature<SummaryGenerator>();
         services.Configure(configureOptions ?? (options => { }));
         services.AddLogging();
 
