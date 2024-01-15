@@ -96,10 +96,10 @@ while(true)
 
 async Task<QueryData> TestContentQuery(IHost host1, string text, string threadId)
 {
-    var queryProvider = host1.Services.GetRequiredService<IContentQueryProvider>();
+    var queryProvider = host1.Services.GetRequiredService<IContentQueryGenerator>();
     //var text = @"get all tasks created yesterday";
 
-    var result = await queryProvider.GetQuery(text, threadId, CancellationToken.None);
+    var result = await queryProvider.GenerateQueryAsync(text, threadId, CancellationToken.None);
 
     return result;
 }

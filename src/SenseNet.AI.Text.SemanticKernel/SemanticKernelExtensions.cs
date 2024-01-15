@@ -8,7 +8,7 @@ public static class SemanticKernelExtensions
 {
     /// <summary>
     /// Adds the Semantic Kernel service to the service collection and the 
-    /// following features to sensenet: Summary provider, Content Query provider.
+    /// following features to sensenet: Summary provider, Content Query generator.
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configureOptions">Configures AI values.</param>
@@ -17,7 +17,7 @@ public static class SemanticKernelExtensions
         Action<SemanticKernelOptions>? configureOptions = null)
     {
         services.AddSingleton<ISummaryProvider, SummaryProvider>();
-        services.AddSingleton<IContentQueryProvider, ContentQueryProvider>();
+        services.AddSingleton<IContentQueryGenerator, ContentQueryGenerator>();
         services.AddSenseNetFeature<SummaryProvider>();
         services.Configure(configureOptions ?? (options => { }));
         services.AddLogging();

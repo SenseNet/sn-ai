@@ -8,13 +8,13 @@ namespace SenseNet.AI.Text.SemanticKernel;
 #pragma warning disable SKEXP0101 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 /// <summary>
-/// Provides content query from user input using Microsoft Semantic Kernel.
+/// Generates content query from user input using Microsoft Semantic Kernel.
 /// </summary>
 /// <inheritdoc />
-public class ContentQueryProvider : IContentQueryProvider, ISnFeature
+public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
 {
     private readonly SemanticKernelOptions _options;
-    private readonly ILogger<ContentQueryProvider> _logger;
+    private readonly ILogger<ContentQueryGenerator> _logger;
 
     #region ISnFeature implementation    
 
@@ -33,17 +33,17 @@ public class ContentQueryProvider : IContentQueryProvider, ISnFeature
 
     #endregion
 
-    public ContentQueryProvider(IOptions<SemanticKernelOptions> options, ILogger<ContentQueryProvider> logger)
+    public ContentQueryGenerator(IOptions<SemanticKernelOptions> options, ILogger<ContentQueryGenerator> logger)
     {
         _options = options.Value;
         _logger = logger;
     }
 
-    public Task<QueryData> GetQuery(string text, CancellationToken cancel)
+    public Task<QueryData> GenerateQueryAsync(string text, CancellationToken cancel)
     {
-        return GetQuery(text, null, cancel);
+        return GenerateQueryAsync(text, null, cancel);
     }
-    public async Task<QueryData> GetQuery(string text, string? threadId, CancellationToken cancel)
+    public async Task<QueryData> GenerateQueryAsync(string text, string? threadId, CancellationToken cancel)
     {   
         if (string.IsNullOrEmpty(_options.OpenAiApiKey))
             throw new InvalidOperationException("OpenAI API key is not set.");
