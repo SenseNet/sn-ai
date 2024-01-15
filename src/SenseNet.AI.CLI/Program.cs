@@ -34,89 +34,88 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 var host = hostBuilder.Build();
 
 // Summary
-//var result = await TestSummary(host);
+//await TestSummary();
 
 // Content Query
-//var result = await TestContentQuery(host);
+await TestContentQuery();
 
 // Azure Vision
-//var result = await TestImageGeneration(host);
+//await TestImageGeneration();
 
-//Console.WriteLine(result);
-
-var repositoryCollection = host.Services.GetRequiredService<IRepositoryCollection>();
-var repository = await repositoryCollection.GetRepositoryAsync(CancellationToken.None);
-
-var threadId = string.Empty;
-
-// ask for user input and generate a content query until the user enters an empty line
-while(true)
+async Task TestContentQuery()
 {
-    ConsoleWrite(ConsoleColor.Yellow, "User Query> ");
+    var repositoryCollection = host.Services.GetRequiredService<IRepositoryCollection>();
+    var repository = await repositoryCollection.GetRepositoryAsync(CancellationToken.None);
 
-    var text = Console.ReadLine();
-    if (string.IsNullOrEmpty(text))
-        break;
+    var threadId = string.Empty;
 
-    var result = await TestContentQuery(host, text, threadId);
-    threadId = result.ThreadId;
-
-    ConsoleWrite(ConsoleColor.Blue, "Content Query> ");
-    Console.WriteLine(result.Query);
-    Console.WriteLine();
-
-    try 
+    // ask for user input and generate a content query until the user enters an empty line
+    while(true)
     {
-        var results = await repository.QueryAsync(new QueryContentRequest()
-        {
-            ContentQuery = result.Query,        
-        }, CancellationToken.None);
+        ConsoleWrite(ConsoleColor.Yellow, "User Query> ");
 
-        if (results.Count == 0)
+        var text = Console.ReadLine();
+        if (string.IsNullOrEmpty(text))
+            break;
+
+        var result = await GenerateContentQuery(text, threadId);
+        threadId = result.ThreadId;
+
+        ConsoleWrite(ConsoleColor.Blue, "Content Query> ");
+        Console.WriteLine(result.Query);
+        Console.WriteLine();
+
+        try 
         {
-            ConsoleWriteLine(ConsoleColor.White, "No results.");
-        }
-        else
-        {
-            foreach (var item in results)
+            var results = await repository.QueryAsync(new QueryContentRequest()
             {
-                var contentType = item["Type"].ToString();
-                ConsoleWriteLine(ConsoleColor.White, $"{contentType,-16}\t{item.Name,-25}\t{item.Path}");
+                ContentQuery = result.Query,        
+            }, CancellationToken.None);
+
+            if (results.Count == 0)
+            {
+                ConsoleWriteLine(ConsoleColor.White, "No results.");
             }
-            
-            Console.WriteLine();
-        }        
-    } 
-    catch (Exception ex) 
-    { 
-        ConsoleWriteLine(ConsoleColor.Red, ex.Message); 
+            else
+            {
+                foreach (var item in results)
+                {
+                    var contentType = item["Type"].ToString();
+                    ConsoleWriteLine(ConsoleColor.White, $"{contentType,-16}\t{item.Name,-25}\t{item.Path}");
+                }
+                
+                Console.WriteLine();
+            }        
+        } 
+        catch (Exception ex) 
+        { 
+            ConsoleWriteLine(ConsoleColor.Red, ex.Message); 
+        }
+        
     }
-    
 }
 
-async Task<QueryData> TestContentQuery(IHost host1, string text, string threadId)
+async Task<QueryData> GenerateContentQuery(string text, string threadId)
 {
-    var queryProvider = host1.Services.GetRequiredService<IContentQueryGenerator>();
-    //var text = @"get all tasks created yesterday";
-
+    var queryProvider = host.Services.GetRequiredService<IContentQueryGenerator>();
     var result = await queryProvider.GenerateQueryAsync(text, threadId, CancellationToken.None);
 
     return result;
 }
 
-async Task<string> TestSummary(IHost host1)
+async Task TestSummary()
 {
-    var summaryProvider = host1.Services.GetRequiredService<ISummaryProvider>();
+    var summaryProvider = host.Services.GetRequiredService<ISummaryGenerator>();
     var text = @"A very short text, but long enough to test the summary feature.";
 
-    var result = await summaryProvider.GetSummary(text, 50, 2, CancellationToken.None);
+    var result = await summaryProvider.GenerateSummaryAsync(text, 50, 2, CancellationToken.None);
 
-    return result;
+    Console.WriteLine(result);
 }
 
-async Task<ImageData> TestImageGeneration(IHost host2)
+async Task TestImageGeneration()
 {
-    var imageGenerator = host2.Services.GetRequiredService<IImageGenerator>();
+    var imageGenerator = host.Services.GetRequiredService<IImageGenerator>();
     var text = @"a fox wearing green trousers playing a flute, 
 followed by many singing rats, photorealistic";
 // var text = @"An old greek philosopher with a long beard and a toga 
@@ -125,7 +124,7 @@ followed by many singing rats, photorealistic";
 
     var imageData = await imageGenerator.GenerateImage(text, 400, 200, CancellationToken.None);
 
-    return imageData;
+    Console.WriteLine(imageData.Url);
 }
 
 void ConsoleWrite(ConsoleColor color, string message)

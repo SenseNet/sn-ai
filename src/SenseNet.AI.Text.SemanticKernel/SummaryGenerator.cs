@@ -7,12 +7,16 @@ using SenseNet.Tools.Features;
 
 namespace SenseNet.AI.Text.SemanticKernel;
 
-public class SummaryProvider : ISummaryProvider, ISnFeature
+/// <summary>
+/// Generates a summary of the given text using the OpenAI API.
+/// </summary>
+/// <inheritdoc/>
+public class SummaryGenerator : ISummaryGenerator, ISnFeature
 {
     private readonly SemanticKernelOptions _options;
-    private readonly ILogger<SummaryProvider> _logger;
+    private readonly ILogger<SummaryGenerator> _logger;
 
-    public SummaryProvider(IOptions<SemanticKernelOptions> options, ILogger<SummaryProvider> logger)
+    public SummaryGenerator(IOptions<SemanticKernelOptions> options, ILogger<SummaryGenerator> logger)
     {
         _options = options.Value;
         _logger = logger;
@@ -35,7 +39,7 @@ public class SummaryProvider : ISummaryProvider, ISnFeature
 
     #endregion
 
-    public async Task<string> GetSummary(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel)
+    public async Task<string> GenerateSummaryAsync(string text, int maxWordCount, int maxSentenceCount, CancellationToken cancel)
     {
         //TODO: can we use a singleton kernel builder, defined during startup in DI?
         var builder = Kernel.CreateBuilder();
