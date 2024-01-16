@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.0.1.5</Version>
+		<Version>0.0.2-beta1</Version>
 		<Authors>tusmester,kavics</Authors>
 		<Company>Sense/Net Inc.</Company>
 		<Copyright>Copyright © Sense/Net Inc.</Copyright>
@@ -30,7 +30,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 		<PackageReference Include="Microsoft.SemanticKernel" Version="1.0.1" />
 		<PackageReference Include="Microsoft.SemanticKernel.Experimental.Assistants" Version="1.0.0-rc4" />
-		<PackageReference Include="SenseNet.Tools" Version="3.2.12.2" />
+		<PackageReference Include="SenseNet.Tools" Version="3.2.13" />
 	</ItemGroup>
 
 	<ItemGroup>
