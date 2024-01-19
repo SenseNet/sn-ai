@@ -15,15 +15,16 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
         services.AddSenseNetSemanticKernel(options =>
         {
             hostContext.Configuration.GetSection("SemanticKernel").Bind(options);
-            options.ConfigureDefaultPlugins = (plugins) =>
+            options.ConfigureDefaultPlugins = (plugins, serviceProvider) =>
             {
-                plugins.AddFromType<SenseNetKernelPlugin>();
+                // pass on the IServiceProvider to the API to let it resolve dependencies
+                plugins.AddFromType<SenseNetKernelPlugin>(serviceProvider: serviceProvider);
             };
         })
         .AddSenseNetAzureVision(options =>
         {
             hostContext.Configuration.GetSection("sensenet:ai:AzureVision").Bind(options);
-        });
+        });        
 
         services.AddSenseNetClient()
         .ConfigureSenseNetRepository(options =>

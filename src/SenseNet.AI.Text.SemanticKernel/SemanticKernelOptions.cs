@@ -33,5 +33,5 @@ public class SemanticKernelOptions
     /// <summary>
     /// Configures the plugins that will be registered by all kernels.
     /// </summary>
-    public Action<KernelPluginCollection> ConfigureDefaultPlugins { get; set; } = _ => { };
+    public Action<KernelPluginCollection, IServiceProvider?> ConfigureDefaultPlugins { get; set; } = (_, _) => { };
 }

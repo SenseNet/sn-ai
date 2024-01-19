@@ -15,6 +15,7 @@ public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
 {
     private readonly SemanticKernelOptions _options;
     private readonly ILogger<ContentQueryGenerator> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
     #region ISnFeature implementation    
 
@@ -33,10 +34,11 @@ public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
 
     #endregion
 
-    public ContentQueryGenerator(IOptions<SemanticKernelOptions> options, ILogger<ContentQueryGenerator> logger)
+    public ContentQueryGenerator(IOptions<SemanticKernelOptions> options, ILogger<ContentQueryGenerator> logger, IServiceProvider serviceProvider)
     {
         _options = options.Value;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
     public Task<QueryData> GenerateQueryAsync(string text, CancellationToken cancel)
@@ -64,7 +66,7 @@ public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
 
         if (_options.ConfigureDefaultPlugins != null)
         {            
-            _options.ConfigureDefaultPlugins(builder.Plugins);
+            _options.ConfigureDefaultPlugins(builder.Plugins, _serviceProvider);
 
             _logger.LogTrace("Configured OpenAI Assistant query generator plugins: " +
                 $"{string.Join(", ", builder.Plugins.Select(p => p.Name))}");
