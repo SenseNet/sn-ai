@@ -59,7 +59,16 @@ public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
         //TODO: can we use a singleton kernel builder, defined during startup in DI?
 
         var builder = await AssistantBuilder.GetAssistantAsync(_options.OpenAiApiKey, 
-            _options.AssistantId, cancellationToken: cancel);
+            _options.AssistantId,             
+            cancellationToken: cancel);
+
+        if (_options.ConfigureDefaultPlugins != null)
+        {            
+            _options.ConfigureDefaultPlugins(builder.Plugins);
+
+            _logger.LogTrace("Configured OpenAI Assistant query generator plugins: " +
+                $"{string.Join(", ", builder.Plugins.Select(p => p.Name))}");
+        }
 
         IChatThread? thread = null;
 
@@ -82,6 +91,11 @@ public class ContentQueryGenerator : IContentQueryGenerator, ISnFeature
             _logger.LogTrace("Creating new OpenAI Assistant thread");
             thread = await builder.NewThreadAsync(cancel);
         }
+
+        // add more context to the text
+        text = $"{text}" + Environment.NewLine + 
+            $"<currentdate>{DateTime.UtcNow.Date}</currentdate>" +
+            $"<currenttime>{DateTime.UtcNow}</currenttime>";
         
         await thread.AddUserMessageAsync(text, cancel);
         var messages = thread.InvokeAsync(builder, cancel);

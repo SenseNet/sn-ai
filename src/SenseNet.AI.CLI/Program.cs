@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel;
 using SenseNet.AI.Text;
+using SenseNet.AI.Text.SemanticKernel;
 using SenseNet.AI.Vision;
 using SenseNet.Client;
 using SenseNet.Extensions.DependencyInjection;
@@ -10,12 +12,18 @@ using SenseNet.Extensions.DependencyInjection;
 var hostBuilder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddSenseNetSemanticKernel(options => 
-                hostContext.Configuration.GetSection("SemanticKernel").Bind(options))
-                .AddSenseNetAzureVision(options =>
-                {
-                    hostContext.Configuration.GetSection("sensenet:ai:AzureVision").Bind(options);
-                });
+        services.AddSenseNetSemanticKernel(options =>
+        {
+            hostContext.Configuration.GetSection("SemanticKernel").Bind(options);
+            options.ConfigureDefaultPlugins = (plugins) =>
+            {
+                plugins.AddFromType<SenseNetKernelPlugin>();
+            };
+        })
+        .AddSenseNetAzureVision(options =>
+        {
+            hostContext.Configuration.GetSection("sensenet:ai:AzureVision").Bind(options);
+        });
 
         services.AddSenseNetClient()
         .ConfigureSenseNetRepository(options =>

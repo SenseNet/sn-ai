@@ -1,4 +1,5 @@
-﻿using SenseNet.Tools.Configuration;
+﻿using Microsoft.SemanticKernel;
+using SenseNet.Tools.Configuration;
 
 namespace SenseNet.AI.Text.SemanticKernel;
 
@@ -28,4 +29,9 @@ public class SemanticKernelOptions
     /// OpenAI assistant ID
     /// </summary>
     public string? AssistantId { get; set; }
+
+    /// <summary>
+    /// Configures the plugins that will be registered by all kernels.
+    /// </summary>
+    public Action<KernelPluginCollection> ConfigureDefaultPlugins { get; set; } = _ => { };
 }
