@@ -46,10 +46,10 @@ var host = hostBuilder.Build();
 //await TestSummary();
 
 // Content Query
-//await TestContentQuery();
+await TestContentQuery();
 
 // Content Type
-await TestContentType();
+//await TestContentType();
 
 // Azure Vision
 //await TestImageGeneration();
