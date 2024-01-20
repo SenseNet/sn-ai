@@ -17,8 +17,8 @@ public class ContentQueryGenerator(IOptions<SemanticKernelOptions> options, ILog
 
     #region ISnFeature implementation    
 
-    public string Name => "AIContentQueryProvider";
-    public string DisplayName => "AI Content Query Provider";
+    public string Name => "AIContentQueryGenerator";
+    public string DisplayName => "AI Content Query Generator";
 
     public Task<FeatureAvailability> GetStateAsync(CancellationToken _)
     {

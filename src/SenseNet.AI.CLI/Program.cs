@@ -46,7 +46,10 @@ var host = hostBuilder.Build();
 //await TestSummary();
 
 // Content Query
-await TestContentQuery();
+//await TestContentQuery();
+
+// Content Type
+await TestContentType();
 
 // Azure Vision
 //await TestImageGeneration();
@@ -111,6 +114,32 @@ async Task<QueryData> GenerateContentQuery(string text, string threadId)
 
     return result;
 }
+
+
+async Task TestContentType()
+{
+    var threadId = string.Empty;
+
+    // ask for user input and generate a content query until the user enters an empty line
+    while(true)
+    {
+        ConsoleWrite(ConsoleColor.Yellow, "User CTD description> ");
+
+        var text = Console.ReadLine();
+        if (string.IsNullOrEmpty(text))
+            break;
+
+        var contentTypeProvider = host.Services.GetRequiredService<IContentTypeGenerator>();
+        var result = await contentTypeProvider.GenerateContentTypeAsync(text, threadId, CancellationToken.None);
+        threadId = result.ThreadId;
+
+        ConsoleWrite(ConsoleColor.Blue, "Content Type> ");
+        Console.WriteLine();
+        ConsoleWrite(ConsoleColor.White, result.ContentTypeDefinition);
+        Console.WriteLine();        
+    }
+}
+
 
 async Task TestSummary()
 {
