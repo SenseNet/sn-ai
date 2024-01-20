@@ -14,7 +14,7 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
     {
         services.AddSenseNetSemanticKernel(options =>
         {
-            hostContext.Configuration.GetSection("SemanticKernel").Bind(options);
+            hostContext.Configuration.GetSection("sensenet:ai:text:SemanticKernel").Bind(options);
             options.ConfigureDefaultPlugins = (plugins, serviceProvider) =>
             {
                 // pass on the IServiceProvider to the API to let it resolve dependencies
