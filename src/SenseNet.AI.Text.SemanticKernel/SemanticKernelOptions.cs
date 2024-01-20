@@ -6,7 +6,7 @@ namespace SenseNet.AI.Text.SemanticKernel;
 /// <summary>
 /// Options for the Semantic Kernel feature.
 /// </summary>
-[OptionsClass(sectionName: "sensenet:ai:SemanticKernel")]
+[OptionsClass(sectionName: "sensenet:ai:text:SemanticKernel")]
 public class SemanticKernelOptions
 {
     //public string Model { get; set; }
@@ -26,12 +26,25 @@ public class SemanticKernelOptions
     public string? OrgId { get; set; }
 
     /// <summary>
-    /// OpenAI assistant ID
+    /// Available assistants
     /// </summary>
-    public string? AssistantId { get; set; }
+    public Assistants Assistants { get; set; } = new();
+
 
     /// <summary>
     /// Configures the plugins that will be registered by all kernels.
     /// </summary>
     public Action<KernelPluginCollection, IServiceProvider?> ConfigureDefaultPlugins { get; set; } = (_, _) => { };
+}
+
+public struct Assistants
+{
+        /// <summary>
+        /// Content query generator assistant ID
+        /// </summary>
+        public string? ContentQueryGenerator { get; set; }
+        /// <summary>
+        /// Content type generator assistant ID
+        /// </summary>
+        public string? ContentTypeGenerator { get; set; }
 }
