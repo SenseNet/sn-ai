@@ -1,0 +1,94 @@
+﻿@page "/contenttype"
+@rendermode InteractiveServer
+@using SenseNet.AI.BlazorWebApp.Models
+@using SenseNet.AI.Text;
+@inject IContentTypeGenerator _contentTypeGenerator;
+@inject IJSRuntime JSRuntime
+
+<HeadContent>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
+</HeadContent>
+
+<h3>ContentType generator</h3>
+
+<div class="sn-container-2panels">
+    <div class="sn-message-panel">
+        <textarea type="text" @bind="userMessage" class="sn-input" />
+
+        <div>
+            <button class="btn btn-primary" @onclick="GenerateContentType" disabled="@working">Send</button>
+            <button class="btn btn-primary" @onclick="ClearPage" disabled="@working">Clear</button>
+        </div>
+
+        @if (working)
+        {
+            <div class="loader"></div>
+        }
+        @if (!string.IsNullOrEmpty(generatedContentType.Value))
+        {
+            <pre><code class="language-xml">@generatedContentType</code></pre>
+        }
+    </div>
+</div>
+
+<script>
+    window.highlight = (code) => {
+        return Prism.highlight(code, Prism.languages.xml, 'xml');
+    }
+</script>
+
+@code {
+    private string? userMessage;
+    private string? threadId;
+    //private string? generatedContentType;
+    private MarkupString generatedContentType;
+    private bool working;
+
+    private async Task GenerateContentType()
+    {
+        working = true;
+
+        var contentTypeData = await _contentTypeGenerator
+            .GenerateContentTypeAsync(userMessage, threadId, CancellationToken.None);
+
+        var ctdText = string.Empty;
+
+        if (!string.IsNullOrEmpty(contentTypeData.ContentTypeDefinition))
+        {
+            ctdText = contentTypeData.ContentTypeDefinition;
+            if (ctdText.StartsWith("```xml"))
+                ctdText = ctdText.Substring(6, ctdText.Length - 9);
+        }
+        else
+        {
+            ctdText = "[No data received]";
+        }
+
+        generatedContentType = await PretifyText(ctdText);
+        //generatedContentType = ctdText;
+
+        threadId = contentTypeData.ThreadId;
+        working = false;
+    }
+
+    private async Task ClearPage()
+    {
+        generatedContentType = await PretifyText(string.Empty);
+        //generatedContentType = string.Empty;
+        userMessage = string.Empty;
+        threadId = string.Empty;
+    }
+
+    private async Task<MarkupString> PretifyText(string text)
+    {
+        return new MarkupString(await JSRuntime.InvokeAsync<string>("highlight", text));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<IJSObjectReference>("import", "https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js");
+        }
+    }
+}

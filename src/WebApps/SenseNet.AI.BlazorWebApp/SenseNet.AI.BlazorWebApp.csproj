@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>081645f0-40b0-4240-835e-0a728e0f23ca</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj" />
+    <ProjectReference Include="..\SenseNet.AI.BlazorWebApp.Client\SenseNet.AI.BlazorWebApp.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
+    <PackageReference Include="SenseNet.Client" Version="3.0.4" />
+  </ItemGroup>
+
+</Project>

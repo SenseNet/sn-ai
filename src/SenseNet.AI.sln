@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Text.SemanticKernel", "SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj", "{9E512451-6530-4582-B1C8-7B99D59DE05D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.Text.SemanticKernel", "SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj", "{9E512451-6530-4582-B1C8-7B99D59DE05D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.CLI", "SenseNet.AI.CLI\SenseNet.AI.CLI.csproj", "{CA633CC5-BB9E-44F6-A764-3791E5308AD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.CLI", "SenseNet.AI.CLI\SenseNet.AI.CLI.csproj", "{CA633CC5-BB9E-44F6-A764-3791E5308AD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Text", "SenseNet.AI.Text\SenseNet.AI.Text.csproj", "{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.Text", "SenseNet.AI.Text\SenseNet.AI.Text.csproj", "{C2947564-F304-4BC1-9B42-B3B1DEB0EFA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Vision", "SenseNet.AI.Vision\SenseNet.AI.Vision.csproj", "{F3BAA456-281B-4264-9084-D4D53A4B8382}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.Vision", "SenseNet.AI.Vision\SenseNet.AI.Vision.csproj", "{F3BAA456-281B-4264-9084-D4D53A4B8382}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenseNet.AI.Vision.Azure", "SenseNet.AI.Vision.Azure\SenseNet.AI.Vision.Azure.csproj", "{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.Vision.Azure", "SenseNet.AI.Vision.Azure\SenseNet.AI.Vision.Azure.csproj", "{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.BlazorWebApp", "WebApps\SenseNet.AI.BlazorWebApp\SenseNet.AI.BlazorWebApp.csproj", "{78FF80AB-E283-4E1C-863A-A1E4BC135B83}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.BlazorWebApp.Client", "WebApps\SenseNet.AI.BlazorWebApp.Client\SenseNet.AI.BlazorWebApp.Client.csproj", "{B1235BF7-C031-40A9-8234-1B3CE08B217D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,8 +43,19 @@ Global
 		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF758B9D-8AD6-4D7D-9051-ACAADBC8E555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E44D01A-B985-4AEB-8D64-651808C619BF}
 	EndGlobalSection
 EndGlobal

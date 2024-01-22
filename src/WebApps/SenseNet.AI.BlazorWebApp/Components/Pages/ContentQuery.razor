@@ -1,0 +1,83 @@
+﻿@page "/contentquery"
+@rendermode InteractiveServer
+@using SenseNet.AI.BlazorWebApp.Models
+@using SenseNet.AI.Text;
+@inject IContentQueryGenerator _contentQueryGenerator; 
+
+<h3>Content Query</h3>
+
+<div class="sn-container-2panels">
+<div class="sn-message-panel">
+    <textarea type="text" @bind="userMessage" class="sn-input" />
+
+    <button class="btn btn-primary" @onclick="GenerateContentQuery" disabled="@working">Send</button>
+    <button class="btn btn-primary" @onclick="ClearPage" disabled="@working">Clear</button>
+
+    <div class="sn-messages">
+        @foreach (var message in messages)
+        {
+            <div class="sn-msg sn-msg-@message.Sender">@message.Message</div>
+        }
+    </div>
+</div>
+<div class="sn-contentgrid-panel">
+
+</div>
+
+</div>
+
+@if (working)
+{
+    <div class="loader"></div>
+}
+
+@code {
+    private string? userMessage;
+    private string? threadId;
+    private List<AiMessage> messages = new();
+    private bool working;
+
+    private async Task GenerateContentQuery()
+    {
+        working = true;
+
+        messages.Add(new AiMessage
+            {
+                Message = userMessage,
+                Sender = "user"
+            });
+
+        var messageToSend = userMessage;
+        userMessage = string.Empty;
+
+        var queryData = await _contentQueryGenerator
+            .GenerateQueryAsync(messageToSend, threadId, CancellationToken.None);
+
+        if (!string.IsNullOrEmpty(queryData.Query))
+        {
+            messages.Add(new AiMessage
+                {
+                    Message = queryData.Query,
+                    Sender = "generator"
+                });
+        }
+        else
+        {
+            messages.Add(new AiMessage
+                {
+                    Message = "[empty response]",
+                    Sender = "adminwarning"
+                });
+        }
+
+        threadId = queryData.ThreadId;
+        working = false;
+    }
+
+    private void ClearPage()
+    {
+        messages.Clear();
+        userMessage = string.Empty;
+        threadId = string.Empty;
+    }
+}
