@@ -103,6 +103,25 @@ button:disabled {
     color: #c28606;
 }
 
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-left: 10px;
+}
+th {
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 1.1em;
+    padding: 5px;
+}
+
+.small-column {
+    width: 20%;
+}
+.large-column {
+    width: 40%;
+}
+
 /* LOADER */
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */

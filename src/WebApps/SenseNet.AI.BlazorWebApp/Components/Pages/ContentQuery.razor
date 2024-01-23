@@ -2,7 +2,10 @@
 @rendermode InteractiveServer
 @using SenseNet.AI.BlazorWebApp.Models
 @using SenseNet.AI.Text;
+@using SenseNet.Client
 @inject IContentQueryGenerator _contentQueryGenerator; 
+@inject IRepositoryCollection _repositories;
+@inject ILogger<ContentQuery> _logger;
 
 <h3>Content Query</h3>
 
@@ -21,6 +24,27 @@
     </div>
 </div>
 <div class="sn-contentgrid-panel">
+    <table>
+        <thead>
+        <tr>
+                    <th class="small-column">Name</th>
+                    <th class="small-column">DisplayName</th>
+            <th class="small-column">Type</th>
+            <th class="large-column">Path</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var content in Contents)
+        {
+            <tr>
+                <td>@content.Name</td>
+                        <td>@content["DisplayName"]?.ToString()</td>
+                <td>@content["Type"].ToString()</td>
+                <td>@content.Path</td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
 </div>
 
@@ -36,6 +60,7 @@
     private string? threadId;
     private List<AiMessage> messages = new();
     private bool working;
+    private List<Content> Contents { get; set; } = new();
 
     private async Task GenerateContentQuery()
     {
@@ -60,6 +85,8 @@
                     Message = queryData.Query,
                     Sender = "generator"
                 });
+
+            await ExecuteQuery(queryData.Query);
         }
         else
         {
@@ -79,5 +106,24 @@
         messages.Clear();
         userMessage = string.Empty;
         threadId = string.Empty;
+        Contents.Clear();
+    }
+
+    private async Task ExecuteQuery(string query)
+    {
+        var repo = await _repositories.GetRepositoryAsync(CancellationToken.None);
+
+        try
+        {
+            Contents = (await repo.QueryAsync(new QueryContentRequest
+            {
+                ContentQuery = query,
+                Metadata = MetadataFormat.None,
+            }, CancellationToken.None)).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during query execution");
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Threading.Channels;
 using Microsoft.SemanticKernel;
+using Newtonsoft.Json;
 using SenseNet.Client;
 
 namespace SenseNet.AI.BlazorWebApp;
@@ -36,14 +38,25 @@ public sealed class SenseNetKernelPlugin
     }
 
     [KernelFunction, Description("Determines the id of a user based on its name, login name or username")]
-    public Task<string> GetUserId(
-        [Description("The name of the user")] string name)
+    public async Task<string> GetUserId(
+        [Description("The name of the user")] string name, CancellationToken cancel)
     {
-        return Task.FromResult("123");
+        var repo = await _repositories.GetRepositoryAsync(cancel);
+        var users = await repo.QueryAsync(new QueryContentRequest
+        {
+            ContentQuery = $"TypeIs:User AND " +
+                           $"(Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")",
+            Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
+        }, cancel);
+
+        return JsonConvert.SerializeObject(new
+        {
+            userIds = users.Select(u => u.Id).ToArray(),
+        });
     }
 
-    [KernelFunction, Description("Executes a content query and returns the result items in json format. " +
-        "Called when a user asks to find one or more content in the repository.")]
+    //[KernelFunction, Description("Executes a content query and returns the result items in json format. " +
+    //    "Called when a user asks to find one or more content in the repository.")]
     public async Task<string> ExecuteContentQuery(
         [Description("Content query text")] string contentQuery,
         [Description("Array of fields that are needed by the business case. Leaving it empty is ok.")] string[]? select = null,
@@ -51,13 +64,6 @@ public sealed class SenseNetKernelPlugin
         CancellationToken cancel = default)
     {
         var repo = await _repositories.GetRepositoryAsync(cancel);
-        //var contentCollection = await repo.QueryAsync(new QueryContentRequest
-        //{
-        //    ContentQuery = contentQuery,
-        //    Select = select,
-        //    Expand = expand,
-        //}, cancel);
-
         var responseText = await repo.GetResponseStringAsync(new ODataRequest
         {
             ContentQuery = contentQuery,
@@ -74,7 +80,7 @@ public sealed class SenseNetKernelPlugin
         return responseText ?? string.Empty;
     }
 
-    [KernelFunction, Description("Sends an email to the provided address containing a subject and body.")]
+    //[KernelFunction, Description("Sends an email to the provided address containing a subject and body.")]
     public Task<bool> SendEmail(
         [Description("Email address")] string emailAddress,
         [Description("Email subject")] string subject,

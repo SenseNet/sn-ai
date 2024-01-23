@@ -42,11 +42,35 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
 
 var host = hostBuilder.Build();
 
+while (true)
+{
+    ConsoleWrite(ConsoleColor.Yellow, "1");
+    ConsoleWriteLine(ConsoleColor.White, " - Summary");
+    ConsoleWrite(ConsoleColor.Yellow, "2");
+    ConsoleWriteLine(ConsoleColor.White, " - Content Query");
+    ConsoleWrite(ConsoleColor.Yellow, "3");
+    ConsoleWriteLine(ConsoleColor.White, " - Content Type");
+
+    var feature = Console.ReadLine();
+    if (string.IsNullOrEmpty(feature))
+        break;
+
+    switch (feature)
+    {
+        case "1": await TestSummary();
+            break;
+        case "2": await TestContentQuery();
+            break;
+        case "3": await TestContentType();
+            break;
+    }
+}
+
 // Summary
 //await TestSummary();
 
 // Content Query
-await TestContentQuery();
+//await TestContentQuery();
 
 // Content Type
 //await TestContentType();
