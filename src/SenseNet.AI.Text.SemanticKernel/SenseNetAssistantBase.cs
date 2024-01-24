@@ -21,7 +21,7 @@ public abstract class SenseNetAssistantBase(IOptions<SemanticKernelOptions> opti
     /// Gets a new assistant instance configured with plugins.
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
-    protected async Task<IAssistant> GetAssistantAsync(CancellationToken cancel)
+    internal async Task<IAssistant> GetAssistantAsync(CancellationToken cancel)
     {
         if (string.IsNullOrEmpty(Options.OpenAiApiKey))
             throw new InvalidOperationException("OpenAI API key is not set.");

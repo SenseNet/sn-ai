@@ -17,7 +17,7 @@ builder.Services.AddSenseNetSemanticKernel(options =>
     options.ConfigureDefaultPlugins = (plugins, serviceProvider) =>
     {
         // pass on the IServiceProvider to the API to let it resolve dependencies
-        plugins.AddFromType<SenseNetKernelPlugin>(serviceProvider: serviceProvider);
+        plugins.AddFromType<SenseNetKernelPlugin>("SNKernelPlugin", serviceProvider: serviceProvider);
     };
 });
 

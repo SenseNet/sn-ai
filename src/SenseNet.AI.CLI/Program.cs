@@ -50,6 +50,8 @@ while (true)
     ConsoleWriteLine(ConsoleColor.White, " - Content Query");
     ConsoleWrite(ConsoleColor.Yellow, "3");
     ConsoleWriteLine(ConsoleColor.White, " - Content Type");
+    ConsoleWrite(ConsoleColor.Yellow, "4");
+    ConsoleWriteLine(ConsoleColor.White, " - Content Manager");
 
     var feature = Console.ReadLine();
     if (string.IsNullOrEmpty(feature))
@@ -62,6 +64,8 @@ while (true)
         case "2": await TestContentQuery();
             break;
         case "3": await TestContentType();
+            break;
+        case "4": await TestContentManager();
             break;
     }
 }
@@ -97,7 +101,7 @@ async Task TestContentQuery()
         var result = await GenerateContentQuery(text, threadId);
         threadId = result.ThreadId;
 
-        ConsoleWrite(ConsoleColor.Blue, "Content Query> ");
+        ConsoleWrite(ConsoleColor.Cyan, "Content Query> ");
         Console.WriteLine(result.Query);
         Console.WriteLine();
 
@@ -164,6 +168,29 @@ async Task TestContentType()
     }
 }
 
+async Task TestContentManager()
+{
+    var threadId = string.Empty;
+
+    // ask for user input and generate a content query until the user enters an empty line
+    while (true)
+    {
+        ConsoleWrite(ConsoleColor.Yellow, "User message> ");
+
+        var text = Console.ReadLine();
+        if (string.IsNullOrEmpty(text))
+            break;
+
+        var contentManager = host.Services.GetRequiredService<IContentManager>();
+        var result = await contentManager.InvokeAsync(text, threadId, CancellationToken.None);
+        threadId = result.ThreadId;
+
+        ConsoleWrite(ConsoleColor.Cyan, "Assistant> ");
+        Console.WriteLine();
+        ConsoleWrite(ConsoleColor.White, result.Text);
+        Console.WriteLine();
+    }
+}
 
 async Task TestSummary()
 {

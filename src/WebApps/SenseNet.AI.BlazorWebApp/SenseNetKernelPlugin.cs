@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Threading.Channels;
 using Microsoft.SemanticKernel;
 using Newtonsoft.Json;
 using SenseNet.Client;
@@ -41,13 +40,13 @@ public sealed class SenseNetKernelPlugin
     public async Task<string> GetUserId(
         [Description("The name of the user")] string name, CancellationToken cancel)
     {
-        var repo = await _repositories.GetRepositoryAsync(cancel);
+        var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
         var users = await repo.QueryAsync(new QueryContentRequest
         {
             ContentQuery = $"TypeIs:User AND " +
                            $"(Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")",
             Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
-        }, cancel);
+        }, cancel).ConfigureAwait(false);
 
         return JsonConvert.SerializeObject(new
         {
@@ -55,39 +54,54 @@ public sealed class SenseNetKernelPlugin
         });
     }
 
-    //[KernelFunction, Description("Executes a content query and returns the result items in json format. " +
-    //    "Called when a user asks to find one or more content in the repository.")]
+    private static readonly string[] DefaultSelectFields = { "Id", "Path", "Type" };
+
+    [KernelFunction, Description("Executes a content query and returns the result content items in json format. " +
+        "Called when it is required to find one or more content in the repository.")]
     public async Task<string> ExecuteContentQuery(
         [Description("Content query text")] string contentQuery,
-        [Description("Array of fields that are needed by the business case. Leaving it empty is ok.")] string[]? select = null,
-        [Description("Array of reference fields to expand in the result.")] string[]? expand = null,
-        CancellationToken cancel = default)
+        [Description("Comma separated array of field names that are needed by the business case or empty string.")] string select,
+        [Description("Comma separated array of reference fields to include in the result or empty string.")] string expand,
+        CancellationToken cancel)
     {
-        var repo = await _repositories.GetRepositoryAsync(cancel);
-        var responseText = await repo.GetResponseStringAsync(new ODataRequest
+        string[]? selectFields = null;
+        if (!string.IsNullOrEmpty(select))
         {
+            selectFields = select.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Union(DefaultSelectFields).Distinct().ToArray();
+        }
+
+        string[]? expandFields = null;
+        if (!string.IsNullOrEmpty(expand))
+        {
+            expandFields = expand.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
+        var responseText = await repo.GetResponseJsonAsync(new ODataRequest(repo.Server)
+        {
+            Path = "/Root",
+            IsCollectionRequest = true,
             ContentQuery = contentQuery,
-            Select = select,
-            Expand = expand,
+            Select = selectFields,
+            Expand = expandFields,
             Metadata = MetadataFormat.None,
-        }, HttpMethod.Get, cancel);
+            
+        }, HttpMethod.Get, cancel).ConfigureAwait(false);
+        
+        var result = "{\"results\": " + JsonConvert.SerializeObject(responseText.d.results) + "}";
 
-        if (responseText != null && responseText.StartsWith("{\r\n  \"d\": {")) 
-        { 
-            responseText = responseText[10..^2];
-        }       
-
-        return responseText ?? string.Empty;
+        return result;
     }
 
-    //[KernelFunction, Description("Sends an email to the provided address containing a subject and body.")]
-    public Task<bool> SendEmail(
+    [KernelFunction, Description("Sends an email containing a subject and body to the provided address.")]
+    public Task<string> SendEmail(
         [Description("Email address")] string emailAddress,
         [Description("Email subject")] string subject,
         [Description("Email body")] string body)
     {
         _logger.LogInformation($"Sending email to {emailAddress} with subject '{subject}' and body '{body}'");
 
-        return Task.FromResult(true);
+        return Task.FromResult("ok");
     }
 }
