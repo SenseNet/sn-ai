@@ -19,12 +19,14 @@ public static class SemanticKernelExtensions
         services.AddSingleton<ISummaryGenerator, SummaryGenerator>();
         services.AddSingleton<IContentQueryGenerator, ContentQueryGenerator>();
         services.AddSingleton<IContentTypeGenerator, ContentTypeGenerator>();
+        services.AddSingleton<IContentManager, ContentManager>();
         
         services.AddSenseNetFeature<SummaryGenerator>();
         services.AddSenseNetFeature<ContentQueryGenerator>();
         services.AddSenseNetFeature<ContentTypeGenerator>();
+        services.AddSenseNetFeature<ContentManager>();
 
-        services.Configure(configureOptions ?? (options => { }));
+        services.Configure(configureOptions ?? (_ => { }));
         services.AddLogging();
 
         return services;

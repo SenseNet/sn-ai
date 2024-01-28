@@ -1,0 +1,129 @@
+﻿@page "/contentquery"
+@rendermode InteractiveServer
+@using SenseNet.AI.BlazorWebApp.Models
+@using SenseNet.AI.Text;
+@using SenseNet.Client
+@inject IContentQueryGenerator _contentQueryGenerator; 
+@inject IRepositoryCollection _repositories;
+@inject ILogger<ContentQuery> _logger;
+
+<h3>Content Query Generator</h3>
+
+<div class="sn-container-2panels">
+<div class="sn-message-panel">
+    <textarea type="text" @bind="userMessage" class="sn-input" />
+
+    <button class="btn btn-primary" @onclick="GenerateContentQuery" disabled="@working">Send</button>
+    <button class="btn btn-primary" @onclick="ClearPage" disabled="@working">Clear</button>
+
+    <div class="sn-messages">
+        @foreach (var message in messages)
+        {
+            <div class="sn-msg sn-msg-@message.Sender">@message.Message</div>
+        }
+    </div>
+</div>
+<div class="sn-contentgrid-panel">
+    <table>
+        <thead>
+        <tr>
+                    <th class="small-column">Name</th>
+                    <th class="small-column">DisplayName</th>
+            <th class="small-column">Type</th>
+            <th class="large-column">Path</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var content in Contents)
+        {
+            <tr>
+                <td>@content.Name</td>
+                        <td>@content["DisplayName"]?.ToString()</td>
+                <td>@content["Type"].ToString()</td>
+                <td>@content.Path</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+</div>
+
+</div>
+
+@if (working)
+{
+    <div class="loader"></div>
+}
+
+@code {
+    private string? userMessage;
+    private string? threadId;
+    private List<AiMessage> messages = new();
+    private bool working;
+    private List<Content> Contents { get; set; } = new();
+
+    private async Task GenerateContentQuery()
+    {
+        working = true;
+
+        messages.Add(new AiMessage
+            {
+                Message = userMessage,
+                Sender = "user"
+            });
+
+        var messageToSend = userMessage;
+        userMessage = string.Empty;
+
+        var queryData = await _contentQueryGenerator
+            .GenerateQueryAsync(messageToSend, threadId, CancellationToken.None);
+
+        if (!string.IsNullOrEmpty(queryData.Query))
+        {
+            messages.Add(new AiMessage
+                {
+                    Message = queryData.Query,
+                    Sender = "generator"
+                });
+
+            await ExecuteQuery(queryData.Query);
+        }
+        else
+        {
+            messages.Add(new AiMessage
+                {
+                    Message = "[empty response]",
+                    Sender = "adminwarning"
+                });
+        }
+
+        threadId = queryData.ThreadId;
+        working = false;
+    }
+
+    private void ClearPage()
+    {
+        messages.Clear();
+        userMessage = string.Empty;
+        threadId = string.Empty;
+        Contents.Clear();
+    }
+
+    private async Task ExecuteQuery(string query)
+    {
+        var repo = await _repositories.GetRepositoryAsync(CancellationToken.None);
+
+        try
+        {
+            Contents = (await repo.QueryAsync(new QueryContentRequest
+            {
+                ContentQuery = query,
+                Metadata = MetadataFormat.None,
+            }, CancellationToken.None)).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during query execution");
+        }
+    }
+}

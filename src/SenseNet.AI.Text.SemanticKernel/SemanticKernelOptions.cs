@@ -47,4 +47,8 @@ public struct Assistants
         /// Content type generator assistant ID
         /// </summary>
         public string? ContentTypeGenerator { get; set; }
+        /// <summary>
+        /// Content manager assistant ID
+        /// </summary>
+        public string? ContentManager { get; set; }
 }
