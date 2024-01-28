@@ -23,35 +23,53 @@ public sealed class SenseNetKernelPlugin
     public async Task<string> GetContainerPath(
         [Description("The name of the folder")] string name, CancellationToken cancel)
     {
-        var repo = await _repositories.GetRepositoryAsync(cancel);
-        var folders = await repo.QueryAsync(new QueryContentRequest
+        try
         {
-            ContentQuery = $"TypeIs:Folder AND Name:\"{name}\"",
-            Select = new[] { "Id", "Path", "Type" }
-        }, cancel);
+            var repo = await _repositories.GetRepositoryAsync(cancel);
+            var folders = await repo.QueryAsync(new QueryContentRequest
+            {
+                ContentQuery = $"TypeIs:Folder AND Name:\"{name}\"",
+                Select = new[] { "Id", "Path", "Type" }
+            }, cancel);
 
-        var paths = string.Join(", ", folders.Select(f => "\"" + f.Path + "\""));
-        var pathResult = $"{{ \"Path\": [ {paths} ] }}";
-        
-        return pathResult;
+            var paths = string.Join(", ", folders.Select(f => "\"" + f.Path + "\""));
+            var pathResult = $"{{ \"Path\": [ {paths} ] }}";
+
+            return pathResult;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error when executing GetContainerPath with name {name}", name);
+        }
+
+        return string.Empty;
     }
 
     [KernelFunction, Description("Determines the id of a user based on its name, login name or username")]
     public async Task<string> GetUserId(
         [Description("The name of the user")] string name, CancellationToken cancel)
     {
-        var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
-        var users = await repo.QueryAsync(new QueryContentRequest
+        try
         {
-            ContentQuery = $"TypeIs:User AND " +
-                           $"(Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")",
-            Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
-        }, cancel).ConfigureAwait(false);
+            var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
+            var users = await repo.QueryAsync(new QueryContentRequest
+            {
+                ContentQuery = $"TypeIs:User AND " +
+                               $"(Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")",
+                Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
+            }, cancel).ConfigureAwait(false);
 
-        return JsonConvert.SerializeObject(new
+            return JsonConvert.SerializeObject(new
+            {
+                userIds = users.Select(u => u.Id).ToArray(),
+            });
+        }
+        catch (Exception ex)
         {
-            userIds = users.Select(u => u.Id).ToArray(),
-        });
+            _logger.LogError(ex, "Error when executing GetUserId with name {name}", name);
+        }
+
+        return string.Empty;
     }
 
     private static readonly string[] DefaultSelectFields = { "Id", "Path", "Type" };
@@ -77,21 +95,30 @@ public sealed class SenseNetKernelPlugin
             expandFields = expand.Split(',', StringSplitOptions.RemoveEmptyEntries);
         }
 
-        var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
-        var responseText = await repo.GetResponseJsonAsync(new ODataRequest(repo.Server)
+        try
         {
-            Path = "/Root",
-            IsCollectionRequest = true,
-            ContentQuery = contentQuery,
-            Select = selectFields,
-            Expand = expandFields,
-            Metadata = MetadataFormat.None,
-            
-        }, HttpMethod.Get, cancel).ConfigureAwait(false);
-        
-        var result = "{\"results\": " + JsonConvert.SerializeObject(responseText.d.results) + "}";
+            var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
+            var responseText = await repo.GetResponseJsonAsync(new ODataRequest(repo.Server)
+            {
+                Path = "/Root",
+                IsCollectionRequest = true,
+                ContentQuery = contentQuery,
+                Select = selectFields,
+                Expand = expandFields,
+                Metadata = MetadataFormat.None,
 
-        return result;
+            }, HttpMethod.Get, cancel).ConfigureAwait(false);
+
+            var result = "{\"results\": " + JsonConvert.SerializeObject(responseText.d.results) + "}";
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error when executing ExecuteContentQuery method with the query: {contentQuery}", contentQuery);
+        }
+
+        return string.Empty;
     }
 
     [KernelFunction, Description("Sends an email containing a subject and body to the provided address.")]

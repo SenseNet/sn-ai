@@ -1,6 +1,5 @@
 using Microsoft.SemanticKernel;
 using SenseNet.AI.BlazorWebApp;
-using SenseNet.AI.BlazorWebApp.Client.Pages;
 using SenseNet.AI.BlazorWebApp.Components;
 using SenseNet.Extensions.DependencyInjection;
 
@@ -48,7 +47,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Counter).Assembly);
+    .AddInteractiveWebAssemblyRenderMode();
 
 app.Run();

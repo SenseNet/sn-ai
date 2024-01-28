@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.Vision.Azure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.BlazorWebApp", "WebApps\SenseNet.AI.BlazorWebApp\SenseNet.AI.BlazorWebApp.csproj", "{78FF80AB-E283-4E1C-863A-A1E4BC135B83}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenseNet.AI.BlazorWebApp.Client", "WebApps\SenseNet.AI.BlazorWebApp.Client\SenseNet.AI.BlazorWebApp.Client.csproj", "{B1235BF7-C031-40A9-8234-1B3CE08B217D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78FF80AB-E283-4E1C-863A-A1E4BC135B83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1235BF7-C031-40A9-8234-1B3CE08B217D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
