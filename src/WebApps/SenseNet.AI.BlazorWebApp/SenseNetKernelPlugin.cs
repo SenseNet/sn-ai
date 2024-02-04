@@ -23,6 +23,8 @@ public sealed class SenseNetKernelPlugin
     public async Task<string> GetContainerPath(
         [Description("The name of the folder")] string name, CancellationToken cancel)
     {
+        _logger.LogTrace("GetContainerPath called with name {name}", name);
+
         try
         {
             var repo = await _repositories.GetRepositoryAsync(cancel);
@@ -49,6 +51,8 @@ public sealed class SenseNetKernelPlugin
     public async Task<string> GetUserId(
         [Description("The name of the user")] string name, CancellationToken cancel)
     {
+        _logger.LogTrace("GetUserId called with name {username}", name);
+
         try
         {
             var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
@@ -74,14 +78,16 @@ public sealed class SenseNetKernelPlugin
 
     private static readonly string[] DefaultSelectFields = { "Id", "Path", "Type" };
 
-    [KernelFunction, Description("Executes a content query and returns the result content items in json format. " +
-        "Called when it is required to find one or more content in the repository.")]
+    [KernelFunction, Description("Executes a content query and returns the result content items in json format, " +
+        "or an object with an error property. Called when it is required to find one or more content in the repository.")]
     public async Task<string> ExecuteContentQuery(
         [Description("Content query text")] string contentQuery,
         [Description("Comma separated array of field names that are needed by the business case or empty string.")] string select,
         [Description("Comma separated array of reference fields to include in the result or empty string.")] string expand,
         CancellationToken cancel)
     {
+        _logger.LogTrace("ExecuteContentQuery called with query {contentQuery}", contentQuery);
+
         string[]? selectFields = null;
         if (!string.IsNullOrEmpty(select))
         {
@@ -116,9 +122,55 @@ public sealed class SenseNetKernelPlugin
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error when executing ExecuteContentQuery method with the query: {contentQuery}", contentQuery);
-        }
 
-        return string.Empty;
+            return JsonConvert.SerializeObject(new { error = ex.Message });
+        }
+    }
+
+    [KernelFunction, Description("Copies a content to a target folder in the content repository.")]
+    public async Task<string> CopyContent(
+        [Description("The path of the content to copy")] string sourcePath,
+        [Description("The target container path to copy the content to")] string targetPath,
+        CancellationToken cancel)
+    {
+        _logger.LogTrace("CopyContent called with source {sourcePath} and target {targetPath}", sourcePath, targetPath);
+
+        try
+        {
+            var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
+            var sourceContent = await repo.LoadContentAsync(new LoadContentRequest()
+            {
+                Path = sourcePath,
+                Select = new[] { "Id", "Path", "Type" }
+            }, cancel).ConfigureAwait(false);
+
+            if (sourceContent == null)
+            {
+                return JsonConvert.SerializeObject(new { error = "Source content not found" });
+            }
+
+            if (!(await repo.IsContentExistsAsync(targetPath, cancel).ConfigureAwait(false)))
+            {
+                _logger.LogTrace("Target container not found: {targetPath}", targetPath);
+
+                return JsonConvert.SerializeObject(new { error = "Target container not found" });
+            }
+
+            await sourceContent.CopyToAsync(targetPath, cancel).ConfigureAwait(false);
+
+            _logger.LogInformation("Content copied from {sourcePath} to {targetPath}", sourcePath, targetPath);
+
+            return JsonConvert.SerializeObject(new
+            {
+                success = true,
+                path = RepositoryPath.Combine(targetPath, sourceContent.Name)
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error when copying {sourcePath} to {targetPath}", sourcePath, targetPath);
+            return JsonConvert.SerializeObject(new { error = ex.Message });
+        }
     }
 
     [KernelFunction, Description("Sends an email containing a subject and body to the provided address.")]
