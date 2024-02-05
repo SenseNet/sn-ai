@@ -33,8 +33,14 @@ public sealed class SenseNetKernelPlugin
                 ContentQuery = $"TypeIs:Folder AND Name:\"{name}\"",
                 Select = new[] { "Id", "Path", "Type" }
             }, cancel);
-
+            
             var paths = string.Join(", ", folders.Select(f => "\"" + f.Path + "\""));
+
+            if (folders.Count < 5)
+                _logger.LogTrace("GetContainerPath found paths: {PathList}", paths);
+            else
+                _logger.LogTrace("GetContainerPath found {ContainerCount} paths", folders.Count);
+
             var pathResult = $"{{ \"Path\": [ {paths} ] }}";
 
             return pathResult;
@@ -63,6 +69,9 @@ public sealed class SenseNetKernelPlugin
                 Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
             }, cancel).ConfigureAwait(false);
 
+            _logger.LogTrace("GetUserId found {usercount} users with name {username}: {UserIds}", users.Count, name,
+                string.Join(", ", users.Select(u => u.Id)));
+
             return JsonConvert.SerializeObject(new
             {
                 userIds = users.Select(u => u.Id).ToArray(),
@@ -86,7 +95,7 @@ public sealed class SenseNetKernelPlugin
         [Description("Comma separated array of reference fields to include in the result or empty string.")] string expand,
         CancellationToken cancel)
     {
-        _logger.LogTrace("ExecuteContentQuery called with query {contentQuery}", contentQuery);
+        _logger.LogTrace("ExecuteContentQuery called with query '{contentQuery}'", contentQuery);
 
         string[]? selectFields = null;
         if (!string.IsNullOrEmpty(select))
@@ -115,6 +124,8 @@ public sealed class SenseNetKernelPlugin
 
             }, HttpMethod.Get, cancel).ConfigureAwait(false);
 
+            _logger.LogTrace("ExecuteContentQuery found {QueryResultCount} items.", (int)responseText.d.__count);
+
             var result = "{\"results\": " + JsonConvert.SerializeObject(responseText.d.results) + "}";
 
             return result;
@@ -141,11 +152,13 @@ public sealed class SenseNetKernelPlugin
             var sourceContent = await repo.LoadContentAsync(new LoadContentRequest()
             {
                 Path = sourcePath,
-                Select = new[] { "Id", "Path", "Type" }
+                Select = new[] { "Id", "Name", "Path", "Type" }
             }, cancel).ConfigureAwait(false);
 
             if (sourceContent == null)
             {
+                _logger.LogTrace("Source content not found: {sourcePath}", sourcePath);
+
                 return JsonConvert.SerializeObject(new { error = "Source content not found" });
             }
 
