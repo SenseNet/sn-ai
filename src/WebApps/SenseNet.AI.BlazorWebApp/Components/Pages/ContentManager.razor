@@ -3,6 +3,7 @@
 @using SenseNet.AI.BlazorWebApp.Models
 @using SenseNet.AI.Text;
 @inject IContentManager _contentManager;
+@inject ILogger<ContentManager> _logger;
 
 <h3>ContentManager</h3>
 
@@ -54,8 +55,18 @@
         var messageToSend = userMessage;
         userMessage = string.Empty;
 
-        var responseData = await _contentManager
-            .InvokeAsync(messageToSend, threadId, CancellationToken.None);
+        ContentManagerData responseData;
+
+        try
+        {
+            responseData = await _contentManager
+                .InvokeAsync(messageToSend, threadId, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            responseData = ContentManagerData.Empty;
+            _logger.LogWarning(ex, "Error while sending message to ContentManager");
+        }
 
         if (!string.IsNullOrEmpty(responseData.Text))
         {
