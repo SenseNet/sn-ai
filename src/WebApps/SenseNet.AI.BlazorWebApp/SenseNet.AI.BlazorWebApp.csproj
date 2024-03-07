@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\SenseNet.AI.Text.SemanticKernel\SenseNet.AI.Text.SemanticKernel.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageReference Include="SenseNet.Client" Version="3.0.4" />
+    <PackageReference Include="SenseNet.Client" Version="3.0.6.1" />
   </ItemGroup>
 
 </Project>
