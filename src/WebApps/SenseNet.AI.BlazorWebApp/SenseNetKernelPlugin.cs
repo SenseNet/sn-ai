@@ -59,13 +59,24 @@ public sealed class SenseNetKernelPlugin
     {
         _logger.LogTrace("GetUserId called with name {username}", name);
 
+        if (string.IsNullOrEmpty(name))
+            return JsonConvert.SerializeObject(new { error = "Name is required" });
+
         try
         {
             var repo = await _repositories.GetRepositoryAsync(cancel).ConfigureAwait(false);
+
+            // If the name is a number, we assume it is an id.
+            // If it is @@currentuser@@, we query for the current user.
+            var queryText = 
+                string.Equals(name, "@@currentuser@@", StringComparison.InvariantCultureIgnoreCase) ||
+                int.TryParse(name, out _)
+                    ? $"TypeIs:User AND Id:{name}"
+                    : $"TypeIs:User AND (Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")";
+
             var users = await repo.QueryAsync(new QueryContentRequest
             {
-                ContentQuery = $"TypeIs:User AND " +
-                               $"(Name:\"{name}\" OR LoginName:\"{name}\" OR DisplayName:\"*{name}*\")",
+                ContentQuery = queryText,
                 Select = new[] { "Id", "Path", "Type", "Name", "LoginName", "Email" }
             }, cancel).ConfigureAwait(false);
 
@@ -91,9 +102,9 @@ public sealed class SenseNetKernelPlugin
         "or an object with an error property. Called when it is required to find one or more content in the repository.")]
     public async Task<string> ExecuteContentQuery(
         [Description("Content query text")] string contentQuery,
-        [Description("Comma separated array of field names that are needed by the business case or empty string.")] string select,
-        [Description("Comma separated array of reference fields to include in the result or empty string.")] string expand,
-        CancellationToken cancel)
+        [Description("Comma separated array of field names that are needed by the business case or empty string.")] string? select = null,
+        [Description("Comma separated array of reference fields to include in the result or empty string.")] string? expand = null,
+        CancellationToken cancel = default)
     {
         _logger.LogTrace("ExecuteContentQuery called with query '{contentQuery}'", contentQuery);
 
